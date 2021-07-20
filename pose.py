@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import traceback
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
@@ -9,6 +10,29 @@ cap = cv2.VideoCapture(0)
 # Curl counter variables
 counter = 0 
 stage = None
+
+#Get angle function by name func
+def get_angle_by_name(keypoint,body_part):
+    body_angle = {"right_shoulder":(14,12,24),"left_shoulder":(13,11,23),"right_knee":(24,26,28),"left_knee":(23,25,28)}
+    point_nums = body_angle[str(body_part)]
+    a = keypoint[point_nums[0]]
+    b = keypoint[point_nums[1]]
+    c = keypoint[point_nums[2]]
+    return calculate_angle(a,b,c)
+    
+#Curl counter func
+def calculate_angle(a,b,c):
+    a = np.array(a) # First
+    b = np.array(b) # Mid
+    c = np.array(c) # End
+    
+    radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+    angle = np.abs(radians*180.0/np.pi)
+    
+    if angle >180.0:
+        angle = 360-angle
+        
+    return angle 
 
 ## Setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -34,6 +58,18 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
             elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
             wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+
+            keypoints = []
+
+            for data_point in results.pose_landmarks.landmark:
+                keypoints.append({
+                         'X': data_point.x,
+                         'Y': data_point.y,
+                         'Z': data_point.z,
+                         'Visibility': data_point.visibility,
+                         })\
+
+            print(keypoints)
             
             # Calculate angle
             angle = calculate_angle(shoulder, elbow, wrist)
@@ -53,7 +89,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 print(counter)
                        
         except:
-            pass
+            traceback.print_exc()
         
         # Render curl counter
         # Setup status box
