@@ -5,20 +5,28 @@ import traceback
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("/dev/video2")
 
 # Curl counter variables
 counter = 0 
 stage = None
 
 #Get angle function by name func
-def get_angle_by_name(keypoint,body_part):
-    body_angle = {"right_shoulder":(14,12,24),"left_shoulder":(13,11,23),"right_knee":(24,26,28),"left_knee":(23,25,28)}
+def get_angle_by_name(keypoints,body_part):
+    print("hello")
+    body_angle = {"right_shoulder":[24,12,14],"left_shoulder":[23,11,13],"right_knee":[28,26,24],"left_knee":[28,25,23],"left_elbow":[11,13,15],"right_elbow":[12,14,16]}
     point_nums = body_angle[str(body_part)]
-    a = keypoint[point_nums[0]]
-    b = keypoint[point_nums[1]]
-    c = keypoint[point_nums[2]]
-    return calculate_angle(a,b,c)
+    try:
+        a = keypoints[point_nums[0]]
+        b = keypoints[point_nums[1]]
+        c = keypoints[point_nums[2]]
+        print(point_nums)
+        return round(calculate_angle(a,b,c))
+    except:
+        exit(0)     
+        traceback.print_exc()
+        print("error")
+    
     
 #Curl counter func
 def calculate_angle(a,b,c):
@@ -54,60 +62,21 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         try:
             landmarks = results.pose_landmarks.landmark
             
-            # Get coordinates
-            shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
-            wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
-
+            # Get keypoints
             keypoints = []
 
             for data_point in results.pose_landmarks.landmark:
-                keypoints.append({
-                         'X': data_point.x,
-                         'Y': data_point.y,
-                         'Z': data_point.z,
-                         'Visibility': data_point.visibility,
-                         })\
+                keypoints.append([
+                         data_point.x,data_point.y])\
 
-            print(keypoints)
-            
-            # Calculate angle
-            angle = calculate_angle(shoulder, elbow, wrist)
-            
-            # Visualize angle
-            cv2.putText(image, str(angle), 
-                           tuple(np.multiply(elbow, [640, 480]).astype(int)), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA
-                                )
-            
-            # Curl counter logic
-            if angle > 160:
-                stage = "down"
-            if angle < 30 and stage =='down':
-                stage="up"
-                counter +=1
-                print(counter)
-                       
+        except AttributeError:
+            print("No body detected")    
         except:
             traceback.print_exc()
+            pass
         
-        # Render curl counter
         # Setup status box
-        cv2.rectangle(image, (0,0), (225,73), (245,117,16), -1)
-        
-        # Rep data
-        cv2.putText(image, 'REPS', (15,12), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
-        cv2.putText(image, str(counter), 
-                    (10,60), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv2.LINE_AA)
-        
-        # Stage data
-        cv2.putText(image, 'STAGE', (65,12), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
-        cv2.putText(image, stage, 
-                    (60,60), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv2.LINE_AA)
+        cv2.rectangle(image, (0,0), (225,300), (245,117,16), -1)
         
         
         # Render detections
@@ -117,7 +86,9 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                  )               
         
         cv2.imshow('Mediapipe Feed', image)
+        cv2.moveWindow('Mediapipe Feed', 20,20);
 
+        
         if cv2.waitKey(10) in [27,32]:
             break
 
