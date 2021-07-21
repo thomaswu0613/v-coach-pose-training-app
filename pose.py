@@ -11,21 +11,20 @@ cap = cv2.VideoCapture("/dev/video2")
 counter = 0 
 stage = None
 
+required = ["right_elbow"]
+body_angle = {"right_shoulder":[24,12,14],"left_shoulder":[23,11,13],"right_knee":[28,26,24],"left_knee":[28,25,23],"left_elbow":[11,13,15],"right_elbow":[12,14,16]}
+
 #Get angle function by name func
 def get_angle_by_name(keypoints,body_part):
     print("hello")
-    body_angle = {"right_shoulder":[24,12,14],"left_shoulder":[23,11,13],"right_knee":[28,26,24],"left_knee":[28,25,23],"left_elbow":[11,13,15],"right_elbow":[12,14,16]}
+    global body_angle
     point_nums = body_angle[str(body_part)]
-    try:
-        a = keypoints[point_nums[0]]
-        b = keypoints[point_nums[1]]
-        c = keypoints[point_nums[2]]
-        print(point_nums)
-        return round(calculate_angle(a,b,c))
-    except:
-        exit(0)     
-        traceback.print_exc()
-        print("error")
+    a = keypoints[point_nums[0]]
+    b = keypoints[point_nums[1]]
+    c = keypoints[point_nums[2]]
+    print(point_nums)
+    angle = round(calculate_angle(a,b,c))
+    return angle
     
     
 #Curl counter func
@@ -41,6 +40,19 @@ def calculate_angle(a,b,c):
         angle = 360-angle
         
     return angle 
+"""
+def check_body_points(requited_body_angles,keypoints):
+    global body_angle
+    for body in requited_body_angles:
+        i = body_angle[body]
+        for j in i:
+            if j < len(keypoints)+1:
+                print("skipped")
+                continue
+"""
+
+def fencing_judge(requited_body_points,key_points):
+    pass
 
 ## Setup mediapipe instance
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -69,14 +81,18 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 keypoints.append([
                          data_point.x,data_point.y])\
 
+            check_body_points(required,keypoints)
+        
+
         except AttributeError:
             print("No body detected")    
         except:
             traceback.print_exc()
             pass
-        
+        angle = get_angle_by_name(keypoints,"right_elbow")
         # Setup status box
         cv2.rectangle(image, (0,0), (225,300), (245,117,16), -1)
+        print(angle)
         
         
         # Render detections
