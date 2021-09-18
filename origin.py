@@ -6,7 +6,10 @@ import numpy as np
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
-camera_index = 0
+camera_index = 2
+same = False
+y = 1
+
 
 #calc angle
 def calculate_angle(a,b,c):
@@ -25,9 +28,19 @@ def calculate_angle(a,b,c):
         
     return angle 
 
+def get_stages(exceise_dir):
+    return len([name for name in os.listdir('.') if os.path.isfile(name)])
+
+stage = 1
+#loop = int(input("How many cycles ? :"))
+
 cap = cv2.VideoCapture(camera_index)
+
+#load exceise standard yaml
+
+
 with mp_pose.Pose(
-    min_detection_confidence=0.5,
+    min_detection_confidence=0.6,
     min_tracking_confidence=0.5) as pose:
   while cap.isOpened():
     success, image = cap.read()
@@ -46,6 +59,7 @@ with mp_pose.Pose(
     image.flags.writeable = False
     results = pose.process(image)
 
+
     # judge process
 
     try:
@@ -62,33 +76,63 @@ with mp_pose.Pose(
         right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
         left_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
         right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
-
+        elbow_right = calculate_angle(right_shoulder, right_elbow, right_wrist)
         elbow_left = calculate_angle(left_shoulder, left_elbow, left_wrist)
-        armpit_left = calculate_angle(left_hip,left_shoulder,left_elbow)
-        knee_left_inner = calculate_angle(left_hip,left_knee,left_ankle)
-        knee_right_inner = calculate_angle(right_hip,right_knee,right_ankle)
-        print("angles:",elbow_left)
+        knee_left = calculate_angle(right_hip, right_knee, right_ankle)
+        points = {"elbow_left":elbow_left,"elbow_right":elbow_right,"knee_left":knee_left}
+        #armpit_left = calculate_angle(left_hip,left_shoulder,left_elbow)
+        #knee_left_inner = calculate_angle(left_hip,left_knee,left_ankle)
+        #knee_right_inner = calculate_angle(right_hip,right_knee,right_ankle)
+        print("angles:",elbow_right,elbow_left)
+        image.flags.writeable = True
+        image = cv2.putText(image, "Left elbow:"+str(elbow_left), (30,20), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+        image = cv2.putText(image, "Right elbow:"+str(elbow_right), (30,50), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+        image = cv2.putText(image, "Right knee:"+str(knee_left), (30,80), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+        print(y)
+        #judge
 
-        with open(r"./exceises/test.yaml") as f:
-            y = yaml.load(f,Loader=yaml.FullLoader)
-            for i in range(0,len(y)):
-                print(y[i])
+        f = open(r"./exceises/test_exceise/stage{}.yaml".format(stage),"r")
+        y = yaml.load(f,Loader=yaml.FullLoader)
 
-    #points = [elbow_left,armpit_left,knee_left_inner,knee_right_inner]
-
-    except:
+        for i in range(0,len(y)):
+            print("hi!")
+            
+            print(y[i]["Standards"])
+            if y[i]["Standards"]["Perfect"]["min"] < points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Perfect"]["max"]:
+                print("---------------")
+                print("Perfect!")
+                image = cv2.putText(image, "Perfect!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+            if y[i]["Standards"]["Good"]["min"] < points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Good"]["max"]:
+                print("---------------")
+                print("Good!")
+                image = cv2.putText(image, "Good!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+                print("---------------")
+            if y[i]["Standards"]["Add-oil"]["min"] < points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Add-oil"]["max"]:
+                print("---------------")
+                print("Add oil!")
+                image = cv2.putText(image, "Add oil!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (255,255,255), 2, cv2.LINE_AA)
+                print("---------------")
+    except AttributeError:
         pass
-    image.flags.writeable = True
+    
+    
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                                 mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
                                 mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
+
     #mp_drawing.draw_landmarks(
     #    image,
     #    results.pose_landmarks,
     #    mp_pose.POSE_CONNECTIONS,
     #    landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
     cv2.imshow('MediaPipe Pose', image)
-    if cv2.waitKey(5) & 0xFF == 27:
+    if cv2.waitKey(5) in [27]:
       break
 cap.release()
