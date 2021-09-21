@@ -32,6 +32,23 @@
     Other :
       score : 0
 
+- Angle_Name : "knee_right"
+  Standards :
+    Perfect :
+      max : 180
+      min : 150
+      score : 3
+    Good : 
+      max : 150
+      min : 130
+      score : 2
+    Add-oil : 
+      max : 130
+      min : 100
+      score : 1
+    Other :
+      score : 0
+
 - Angle_Name : "knee_left"
   Standards :
     Perfect :
@@ -49,41 +66,7 @@
     Other :
       score : 0
 
-- Angle_Name : "knee_left"
-  Standards :
-    Perfect :
-      max : 103.5
-      min : 76.5
-      score : 3
-    Good : 
-      max : 117.5
-      min : 103.5
-      score : 2
-    Add-oil : 
-      max : 130.5
-      min : 76.5
-      score : 1
-    Other :
-      score : 0
-    
-- Angle_Name : "knee_right"
-  Standards :
-    Perfect :
-      max : 180
-      min : 160
-      score : 3
-    Good : 
-      max : 160
-      min : 150
-      score : 2
-    Add-oil : 
-      max : 150
-      min : 120
-      score : 1
-    Other :
-      score : 0
-
-- Angle_Name : "knee_left"
+- Angle_Name : "hip_left"
   Standards :
     Perfect :
       max : 90

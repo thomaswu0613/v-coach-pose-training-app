@@ -11,7 +11,7 @@ camera_index = 0
 same = False
 overall = []
 skip = False
-stage = 1
+s = 0
 exceise_name = "test_exceise"
 
 
@@ -107,68 +107,45 @@ with mp_pose.Pose(
                    1, (255,255,255), 1, cv2.LINE_AA)
         image = cv2.putText(image, "Left knee:"+str(round(knee_right,2)), (30,100), cv2.FONT_HERSHEY_SIMPLEX, 
                    1, (255,255,255), 1, cv2.LINE_AA)
+        print("stage",stage)
         #judge
 
-        f = open(r"./exceises/{}/stage{}.yaml".format(exceise_name,stage),"r")
-        y = yaml.load(f,Loader=yaml.FullLoader)
-        print(y)
+        #f = open(r"./exceises/{}/stage{}.yaml".format(exceise_name,stage),"r")
+        #y = yaml.load(f,Loader=yaml.FullLoader)
+
         overall = []
-        for i in range(0,len(y)):
-            
-            key = ""
-            print("hi!")
-            
-            print(y[i])
-            
-            try:
-                print(y[i]["Angle_Name"])
-                if y[i]["Standards"]["Perfect"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Perfect"]["max"]:
-                    print("---------------")
-                    print("Perfect!")
-                    key = "Perfect"
-                    #image = cv2.putText(image, "Perfect!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
-                    #1, (255,255,255), 2, cv2.LINE_AA)
-                elif y[i]["Standards"]["Good"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Good"]["max"]:
-                    print("---------------")
-                    print("Good!")
-                    key = "Good"
-                    #image = cv2.putText(image, "Good!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
-                    #1, (255,255,255), 2, cv2.LINE_AA)
-                    print("---------------")
-                elif y[i]["Standards"]["Add-oil"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Add-oil"]["max"]:
-                    print("---------------")
-                    print("Add oil!")
-                    key = "Add-oil"
-                    #image = cv2.putText(image, "Add oil!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
-                    #1, (255,255,255), 2, cv2.LINE_AA)
-                    print("---------------")
-                else:
-                    key = "Other"
-                overall.append(y[i]["Standards"][key]["score"])
-            except TypeError:
-                image = cv2.putText(image, "Not enough points to score.", (30,150), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
 
-            
-            if sum(overall) >= (len(y)):
-                stage+=1
-            
-            if stage == get_stages("./exceises/{}".format(exceise_name,stage))-1:
-                stage=0
-            
-
-
+        if (s == 0):
+            print("XX",elbow_left)
+            if 140<elbow_left<180 and 140<elbow_right<180 and 160<knee_left<180 and 160<knee_right<180:
+                image = cv2.putText(image, "Perfect!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (255,255,255), 2, cv2.LINE_AA)
+            print("Hello")
+            stage = 1
+        else:
+            if 160<elbow_left<180 and 160<elbow_right<180 and 60<knee_left<90 and 60<knee_right<90 and 60<hip_left<90:
+                image = cv2.putText(image, "Perfect!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (255,255,255), 2, cv2.LINE_AA)
+            if 150<elbow_left<160 and 150<elbow_right<160 and 40<knee_left<60 and 40<knee_right<60 and 20<hip_left<40:
+                image = cv2.putText(image, "Good!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (255,255,255), 2, cv2.LINE_AA)
+            if 120<elbow_left<150 and 120<elbow_right<150 and 20<knee_left<40 and 20<knee_right<40 and 20<hip_left<40:
+                image = cv2.putText(image, "Add Oil!", (30,110), cv2.FONT_HERSHEY_SIMPLEX, 
+                        1, (255,255,255), 2, cv2.LINE_AA)
+            stage = 0
                 
     except :
+        traceback.print_exc()
         image = cv2.putText(image, "No body detected.", (30,30), cv2.FONT_HERSHEY_SIMPLEX, 
                    1, (0,0,255), 2, cv2.LINE_AA)
     print(overall)  
     print("Stages:{}",stage) 
-    
+    """
     if sum(overall)==len(y) :
         image = cv2.putText(image, "Perfect".format(str(stage)), (30,170), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
     if sum(overall)>len(y)*2:
         image = cv2.putText(image, "Perfect".format(str(stage)), (30,170), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)    
-
+    """
     image = cv2.putText(image, "Stage {}".format(str(stage)), (30,170), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
     image = cv2.putText(image, "Overall Score:"+str(sum(overall)), (30,110), cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,255), 2, cv2.LINE_AA)
     
