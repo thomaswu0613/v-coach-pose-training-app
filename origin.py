@@ -84,22 +84,48 @@ with mp_pose.Pose(
         yml = yaml.load(f,Loader=yaml.FullLoader)
 
 
-        #Stage_scoring
+        #Stage_scoring and Pose scoring
         stage_scoring = []
+        overall = []
         for i in range(0,len(yml)-1):
             print(yml[i])
 
             try:
+
+                #Stage Scoring
+
                 if yml[i]["Standards"]["Basic"]["min"] <= points[yml[i]["Angle_Name"]] <= yml[i]["Standards"]["Basic"]["max"]:
                     stage_scoring.append(1)
+
+                #Pose Scoring
+
+                if yml[i]["Standards"]["Perfect"]["min"] <= points[str(yml[i]["Angle_Name"])] < yml[i]["Standards"]["Perfect"]["max"]:
+                    key = "Perfect"
+                    #image = cv2.putText(image, "{}!".format(key), (20,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 3, cv2.LINE_AA)
+                elif yml[i]["Standards"]["Good"]["min"] <= points[str(yml[i]["Angle_Name"])] < yml[i]["Standards"]["Good"]["max"]:
+                    key = "Good"
+                    #image = cv2.putText(image, "{}!".format(key), (20,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 3, cv2.LINE_AA)
+                elif yml[i]["Standards"]["Add-oil"]["min"] <= points[str(yml[i]["Angle_Name"])] < yml[i]["Standards"]["Add-oil"]["max"]:
+                    key = "Add-oil"
+                    #image = cv2.putText(image, "{}!".format(key), (20,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 3, cv2.LINE_AA)                                
+                else:
+                     key = "Other"           
+                overall.append(yml[i]["Standards"][key]["score"])
             except TypeError:
                 print("Not enough points")
 
         print("----------------")
         print("Stage Scoring : {}".format(sum(stage_scoring)))
-        print(stage_scoring)
+        print("Overall Scoring : {}".format(sum(overall)))
         print(points)
         print("----------------")
+
+        if len(yml)*2 <= sum(overall) <= len(yml)*3:
+            image = cv2.putText(image, "Perfect!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA)
+        elif len(yml) <= sum(overall) <= len(yml)*2:
+            image = cv2.putText(image, "Good!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA) 
+        elif sum(overall) <= len(yml):
+            image = cv2.putText(image, "Keep going!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA)
 
         if sum(stage_scoring) >= len(yml)*0.75:
             if stage_number == get_stages(path_config["test_exceise"])-1:
@@ -108,7 +134,10 @@ with mp_pose.Pose(
                 stage_number += 1
 
         print("Stage:{}".format(stage_number))
-        image = cv2.putText(image, "Stage:"+str(stage_number), (20,50), cv2.FONT_HERSHEY_SIMPLEX, 
+        image = cv2.putText(image, "Stage:"+str(stage_number), (20,40), cv2.FONT_HERSHEY_SIMPLEX, 
+                   2, (0,0,255), 3, cv2.LINE_AA)
+
+        image = cv2.putText(image, "Overall Score:"+str(sum(overall)), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 
                    2, (0,0,255), 3, cv2.LINE_AA)
 
     except AttributeError:
