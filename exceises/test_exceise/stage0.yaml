@@ -1,5 +1,8 @@
 - Angle_Name : "elbow_left"
   Standards :
+    Basic: 
+      max: 180
+      min: 120
     Perfect :
       max : 180
       min : 160
@@ -17,6 +20,9 @@
     
 - Angle_Name : "elbow_right"
   Standards :
+    Basic: 
+      max: 180
+      min: 120
     Perfect :
       max : 180
       min : 160
@@ -34,6 +40,9 @@
 
 - Angle_Name : "knee_right"
   Standards :
+    Basic: 
+      max: 180
+      min: 120
     Perfect :
       max : 180
       min : 150
@@ -51,34 +60,38 @@
 
 - Angle_Name : "knee_left"
   Standards :
+    Basic: 
+      max: 190
+      min: 160
     Perfect :
-      max : 90
-      min : 60
+      max : 190
+      min : 175
       score : 3
     Good : 
-      max : 60
-      min : 40
+      max : 175
+      min : 160
       score : 2
     Add-oil : 
-      max : 40
-      min : 20
+      max : 160
+      min : 150
       score : 1
     Other :
       score : 0
 
-- Angle_Name : "hip_left"
-  Standards :
-    Perfect :
-      max : 90
-      min : 60
-      score : 3
-    Good : 
-      max : 60
-      min : 40
-      score : 2
-    Add-oil : 
-      max : 40
-      min : 20
-      score : 1
-    Other :
-      score : 0
+
+# - Angle_Name : "hip_left"
+#   Standards :
+#     Perfect :
+#       max : 90
+#       min : 60
+#       score : 3
+#     Good : 
+#       max : 60
+#       min : 40
+#       score : 2
+#     Add-oil : 
+#       max : 40
+#       min : 20
+#       score : 1
+#     Other :
+#       score : 0

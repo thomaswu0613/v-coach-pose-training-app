@@ -1,0 +1,9 @@
+if y[i]["Standards"]["Perfect"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Perfect"]["max"]:
+
+elif y[i]["Standards"]["Good"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Good"]["max"]:
+
+elif y[i]["Standards"]["Add-oil"]["min"] <= points[str(y[i]["Angle_Name"])] < y[i]["Standards"]["Add-oil"]["max"]:
+                
+else:
+                
+overall.append(y[i]["Standards"][key]["score"])

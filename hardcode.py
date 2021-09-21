@@ -7,7 +7,7 @@ import os
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
-camera_index = 0
+camera_index = 1
 same = False
 overall = []
 skip = False

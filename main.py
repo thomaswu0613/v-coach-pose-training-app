@@ -67,9 +67,6 @@ with mp_pose.Pose(
     image.flags.writeable = False
     results = pose.process(image)
 
-
-    # judge process
-
     try:
         landmarks = results.pose_landmarks.landmark  
         left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
