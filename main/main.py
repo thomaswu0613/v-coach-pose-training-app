@@ -4,16 +4,47 @@ import mediapipe as mp
 import traceback
 import numpy as np
 import os
+import pathlib
 
 #variables declartion
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 stage_number = 0
-exceise_name = "test_exceise"
+base_path = pathlib.Path(os.path.abspath(os.getcwd())).parent
 
-#read exceises path config
-f = open("./path.yml","r")
-path_config = yaml.load(f,Loader=yaml.FullLoader)
+
+
+#TUI Menu
+def TUIMenu(exceise_dir):
+    count = 0
+    exceises = {}
+    ok = False
+    print("------------------------")
+    for name in os.listdir(exceise_dir):
+        exceises[str(count)] = name
+        print("{}. : {}".format(count,name))
+    print("------------------------")
+    print("")
+    while True:
+        try:
+            ans = input("Please Enter the number of the exceise you want to practise : ")
+            int(ans)
+            if int(ans) > count:
+                pass
+            else:
+                ok = True
+        except ValueError:
+            print("Please enter nummber !")
+        else:
+            if ok:
+                return exceises[ans]
+                break
+            else:
+                pass
+            
+exceise_name = TUIMenu("{}/exceises".format(base_path))
+print("Exceise Selected : {}".format(exceise_name))
+
 
 #calc angle
 def calculate_angle(a,b,c):
@@ -83,7 +114,7 @@ with mp_pose.Pose(
         points = {"elbow_left":elbow_left,"elbow_right":elbow_right,"knee_left":knee_left,"knee_right":knee_left,"hip_left":hip_left}
 
         #Read yaml stage file
-        f = open("{}/stage{}.yaml".format(path_config[exceise_name],stage_number),"r")
+        f = open("{}/exceises/{}/stage{}.yaml".format(base_path,exceise_name,stage_number),"r")
         yml = yaml.load(f,Loader=yaml.FullLoader)
 
 
