@@ -56,6 +56,9 @@ with mp_pose.Pose(
     image.flags.writeable = False
     results = pose.process(image)
 
+    #create empty frame to display data
+    data = np.zeros([600,600,3])
+
     try:
 
         #Get points (x,y) and calc angle
@@ -121,11 +124,11 @@ with mp_pose.Pose(
         print("----------------")
 
         if len(yml)*2 <= sum(overall) <= len(yml)*3:
-            image = cv2.putText(image, "Perfect!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA)
+            data = cv2.putText(data, "Perfect!", (20,120), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,255), 3, cv2.LINE_AA)
         elif len(yml) <= sum(overall) <= len(yml)*2:
-            image = cv2.putText(image, "Good!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA) 
+            data = cv2.putText(data, "Good!", (20,1200), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,255), 3, cv2.LINE_AA) 
         elif sum(overall) <= len(yml):
-            image = cv2.putText(image, "Keep going!", (20,60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255), 3, cv2.LINE_AA)
+            data = cv2.putText(data, "Keep going!", (20,120), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,255), 3, cv2.LINE_AA)
 
         if sum(stage_scoring) >= len(yml)*0.75:
             if stage_number == get_stages(path_config["test_exceise"])-1:
@@ -134,11 +137,11 @@ with mp_pose.Pose(
                 stage_number += 1
 
         print("Stage:{}".format(stage_number))
-        image = cv2.putText(image, "Stage:"+str(stage_number), (20,40), cv2.FONT_HERSHEY_SIMPLEX, 
-                   2, (0,0,255), 3, cv2.LINE_AA)
+        data = cv2.putText(data, "Stage:"+str(stage_number), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 
+                   2, (255,0,255), 3, cv2.LINE_AA)
 
-        image = cv2.putText(image, "Overall Score:"+str(sum(overall)), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 
-                   2, (0,0,255), 3, cv2.LINE_AA)
+        data = cv2.putText(data, "Overall Score:"+str(sum(overall)), (20,180), cv2.FONT_HERSHEY_SIMPLEX, 
+                   2, (255,0,255), 3, cv2.LINE_AA)
 
     except AttributeError:
         print("No body detected.")
@@ -151,7 +154,11 @@ with mp_pose.Pose(
                                 mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
                                 mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2) 
                                  )
+    
     cv2.imshow('MediaPipe Pose', image)
+    cv2.moveWindow('MediaPipe Pose',1000,200)
+    cv2.imshow('Data Display',data)
+    cv2.moveWindow('Data Display',350,200)
 
     key = cv2.waitKey(5)
     if key in [27,ord("q")]:
