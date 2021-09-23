@@ -42,7 +42,7 @@ def TUIMenu(exceise_dir):
             else:
                 pass
             
-exceise_name = TUIMenu("{}/exceises".format(base_path))
+exceise_name = TUIMenu("{}\exceises".format(base_path))
 print("Exceise Selected : {}".format(exceise_name))
 
 
@@ -68,7 +68,7 @@ def get_stages(exceise_dir):
 
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(
-    min_detection_confidence=0.6,
+    min_detection_confidence=0.5,
     min_tracking_confidence=0.5) as pose:
   while cap.isOpened():
     success, image = cap.read()
@@ -114,7 +114,7 @@ with mp_pose.Pose(
         points = {"elbow_left":elbow_left,"elbow_right":elbow_right,"knee_left":knee_left,"knee_right":knee_left,"hip_left":hip_left}
 
         #Read yaml stage file
-        f = open("{}/exceises/{}/stage{}.yaml".format(base_path,exceise_name,stage_number),"r")
+        f = open("{}\exceises\{}\stage{}.yaml".format(base_path,exceise_name,stage_number),"r")
         yml = yaml.load(f,Loader=yaml.FullLoader)
 
 
@@ -162,7 +162,7 @@ with mp_pose.Pose(
             data = cv2.putText(data, "Keep going!", (20,120), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,255), 3, cv2.LINE_AA)
 
         if sum(stage_scoring) >= len(yml)*0.75:
-            if stage_number == get_stages(path_config["test_exceise"])-1:
+            if stage_number == get_stages("{}\\exceises".format(base_path)):
                 stage_number = 0
             else:
                 stage_number += 1
