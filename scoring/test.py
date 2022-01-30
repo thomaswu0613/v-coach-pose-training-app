@@ -1,5 +1,3 @@
-from pprint import pprint
-from tkinter import N
 import traceback
 import cv2
 import mediapipe as mp
