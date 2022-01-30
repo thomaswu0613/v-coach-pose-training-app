@@ -1,4 +1,17 @@
 
+class Body():
+    def __init__(self,results,mp_pose):
+        if not results:
+            print("No results")
+            return
+        self.results = results
+        self.lm = self.results.pose_landmarks.landmark
+        self.mp_pose = mp_pose
+        print("hello")
+    def nose(self):
+        print("nose")
+        return [self.lm[self.mp_pose.PoseLandmark.NOSE.value].x, self.lm[self.mp_pose.PoseLandmark.NOSE.value].y]
+
 
 class Pose(object):
     def getpoints(results):

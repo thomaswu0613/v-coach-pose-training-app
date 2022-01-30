@@ -1,8 +1,9 @@
+from pprint import pprint
 from tkinter import N
 import traceback
 import cv2
 import mediapipe as mp
-from pose import Pose
+from pose import Pose, Body
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
@@ -28,13 +29,14 @@ with mp_pose.Pose(
 
     # Get landmarks
     if results is not None:
+      bodylm = Body(results, mp_pose)
       try:
+        print("--------------")
+        print(bodylm.nose())
+        print("--------------")
         print(Pose.getpoints(results))
-        print("--------------------")
-        print([landmarks[mp_pose.PoseLandmark.NOSE.value].x,landmarks[mp_pose.PoseLandmark.NOSE.value].y])
-        print("--------------------")
       except:
-        pass
+        traceback.print_exc()
 
     
 
