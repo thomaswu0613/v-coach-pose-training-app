@@ -10,8 +10,9 @@ mp_pose = mp.solutions.pose
 
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(
-    min_detection_confidence=0.6,
-    min_tracking_confidence=0.6) as pose:
+    min_detection_confidence=0.4,
+    model_complexity=2,
+    min_tracking_confidence=0.4) as pose:
   while cap.isOpened():
     success, image = cap.read()
     if not success:
@@ -31,8 +32,9 @@ with mp_pose.Pose(
       try:
         print("--------------")
         print(bodylm.nose())
+        print(bodylm.left_elbow())
+        print(bodylm.left_foot_index())
         print("--------------")
-        print(Pose.getpoints(results))
       except:
         traceback.print_exc()
 
