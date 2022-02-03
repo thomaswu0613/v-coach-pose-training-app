@@ -1,8 +1,4 @@
-
-from re import A
-
-
-class Body():
+class BodyLandMarks():
     def __init__(self,results,mp_pose):
         if not results:
             return
@@ -54,7 +50,7 @@ class Body():
         if all(i <= 1 for i in a): return a
         else: return None
     def right_mouth(self):
-        a = [self.lm[self.mp_pose.PoseLandmark.RIGHT_LEFT.value].x, self.lm[self.mp_pose.PoseLandmark.MOUTH_RIGHT.value].y]
+        a = [self.lm[self.mp_pose.PoseLandmark.MOUTH_RIGHT.value].x, self.lm[self.mp_pose.PoseLandmark.MOUTH_RIGHT.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
     def left_shoulder(self):
@@ -81,16 +77,19 @@ class Body():
         a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
-    def left_pinky(self):
-        a =  [self.lm[self.mp_pose.PoseLandmark.LEFT_PICKY.value].x, self.lm[self.mp_pose.PoseLandmark.LEFT_PICKY.value].y]
+    def left_PINKY(self):
+        a =  [self.lm[self.mp_pose.PoseLandmark.LEFT_PINKY.value].x, self.lm[self.mp_pose.PoseLandmark.LEFT_PINKY.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
-    def right_pinky(self):
-        a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_PICKY.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_PICKY.value].y]
+    def right_PINKY(self):
+        a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_PINKY.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_PINKY.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
     def left_index(self):
         a =  [self.lm[self.mp_pose.PoseLandmark.LEFT_INDEX.value].x, self.lm[self.mp_pose.PoseLandmark.LEFT_INDEX.value].y]
+        if all(i <= 1 for i in a): return a
+    def right_index(self):
+        a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_INDEX.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_INDEX.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
     def left_thumb(self):
@@ -117,11 +116,19 @@ class Body():
         a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_KNEE.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
+    def left_ankle(self):
+        a =  [self.lm[self.mp_pose.PoseLandmark.LEFT_ANKLE.value].x, self.lm[self.mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
+        if all(i <= 1 for i in a): return a
+        else: return None
+    def right_ankle(self):
+        a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+        if all(i <= 1 for i in a): return a
+        else: return None
     def left_heel(self):
         a =  [self.lm[self.mp_pose.PoseLandmark.LEFT_HEEL.value].x, self.lm[self.mp_pose.PoseLandmark.LEFT_HEEL.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
-    def rigth_heel(self):
+    def right_heel(self):
         a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_HEEL.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_HEEL.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
@@ -133,7 +140,42 @@ class Body():
         a =  [self.lm[self.mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].x, self.lm[self.mp_pose.PoseLandmark.RIGHT_FOOT_INDEX.value].y]
         if all(i <= 1 for i in a): return a
         else: return None
-    
+    def return_all_points(self):
+        return [
+            self.nose(),
+            self.left_eye_inner(),
+            self.left_eye(),
+            self.left_eye_outer(),
+            self.right_eye_inner(),
+            self.right_eye(),
+            self.right_eye_outer(),
+            self.left_ear(),
+            self.right_ear(),
+            self.left_mouth(),
+            self.right_mouth(),
+            self.left_shoulder(),
+            self.right_shoulder(),
+            self.left_elbow(),
+            self.right_elbow(),
+            self.left_wrist(),
+            self.right_wrist(),
+            self.left_PINKY(),
+            self.right_PINKY(),
+            self.left_index(),
+            self.right_index(),
+            self.left_thumb(),
+            self.right_thumb(),
+            self.left_hip(),
+            self.right_hip(),
+            self.left_knee(),
+            self.right_knee(),
+            self.left_ankle(),
+            self.right_ankle(),
+            self.left_heel(),
+            self.right_heel(),
+            self.left_foot_index(),
+            self.right_foot_index()
+        ]
 
 
 

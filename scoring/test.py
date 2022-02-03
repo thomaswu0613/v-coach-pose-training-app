@@ -1,7 +1,7 @@
 import traceback
 import cv2
 import mediapipe as mp
-from pose import Pose, Body
+from pose import BodyLandMarks, Pose
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
@@ -28,12 +28,10 @@ with mp_pose.Pose(
 
     # Get landmarks
     if results is not None:
-      bodylm = Body(results, mp_pose)
+      lm = BodyLandMarks(results, mp_pose)
       try:
         print("--------------")
-        print(bodylm.nose())
-        print(bodylm.left_elbow())
-        print(bodylm.left_foot_index())
+        print(lm.return_all_points())
         print("--------------")
       except:
         traceback.print_exc()
