@@ -2,6 +2,12 @@
 
 ### Daily Logs:
 
+###### 2022-2-3
+
+- Ported scoring lib to main program (In testing stage - still in progass)
+
+- Stage counter with simularty from different frames in sample video <mark>(Not yet started !)</mark>
+
 ###### 2022-1-31
 
 - Implementation of Mediapipe keypoints (Finished)
@@ -18,7 +24,7 @@
 
 - [ ] Research and work on L2 normalization with cord -> (x,y) (??)
 
-- [ ]  <mark>UI !!!!!!</mark>
+- [ ] <mark>UI !!!!!!</mark>
 
 - [ ] <mark>Config file for each execise (???)</mark>
   
@@ -49,7 +55,7 @@
 
 - [ ] Save execise standard with [Pickle]((https://docs.python.org/zh-cn/3/library/pickle.html)) or Yaml or Json (??)
 
-- [ ]  Opimize speed, live scoring : 
+- [ ] Opimize speed, live scoring : 
 
 ### Roadmap:
 
@@ -61,10 +67,6 @@ Stage Counter with Mediapipe
 
 Person Profile System and Personizle
 
-
-
 ### Notes:
 
 - Unit Ventor
-
-
