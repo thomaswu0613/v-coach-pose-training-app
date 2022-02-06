@@ -2,6 +2,12 @@
 
 ### Daily Logs:
 
+###### 2022-2-6
+
+- Working on a bunch of things (Ahhhhhhhhh!)
+  - StageManager
+  - Scoring Library support
+
 ###### 2022-2-3
 
 - Ported scoring lib to main program (In testing stage - still in progass)
