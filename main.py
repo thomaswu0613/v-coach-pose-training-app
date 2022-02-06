@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 import os
 import sys
+from stageman import StageManager
 
 sys.path.insert(0, '/home/thomasw/workspace/v-coach/scoring_lib')
 
@@ -18,34 +19,15 @@ fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
 out = cv2.VideoWriter("./tmp.mp4",fourcc,15.0,(640,480),True)
 
 
-def  TUIMenu ( exceise_dir ):
-    count = 0
-    exceises = {}
-    ok = False
-    print("------------------------")
-    for  name  in  os . listdir ( exceise_dir ):
-        exceises[str(count)] = name
-        print("{}. : {}".format(count,name))
-    print("------------------------")
-    print("")
-    while True:
-        try:
-            ans = input("Please Enter the number of the exceise you want to practise : ")
-            if int(ans) > count:
-                pass
-            else:
-                ok = True
-        except ValueError:
-            print("Please enter nummber !")
-        else:
-            if  ok :
-                return exceises[ans]
-                break
-            else:
-                pass
+def  TUIMenu (exceise_dir="./execises"):
+    print("----------------------")
+    for i in os.listdir(exceise_dir):
+        print(i)
+    print("----------------------")
+
 
 lookup = TUIMenu("./lookups")
-
+sm = StageManager()
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(
     min_detection_confidence=0.4,
@@ -59,7 +41,6 @@ with mp_pose.Pose(
       # If loading a video, use 'break' instead of 'continue'.
       continue
     out.write(image)
-    print("fps:"+str(round(cap.get(cv2.CAP_PROP_FPS))))
     # To improve performance, optionally mark the image as not writeable to
     # pass by reference.
     image.flags.writeable = False
