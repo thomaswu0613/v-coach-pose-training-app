@@ -1,36 +1,40 @@
-import os
-import cv2
-import sys
-sys.path.insert(1, './scoring_lib')
-from calculations import get_Score
+from tkinter.messagebox import NO
+import yaml
+from yaml import CLoader as Loader
+import numpy
+from scipy import spatial
+
 class ScoringManager():
-    def __init__(self,execise_name):
-        self.video_name = ""
-        self.current_rep = 0
-        self.video_path = "./tmp"
-        self.action = execise_name
-        self.video_list = []
-        self.counted = False
-    def save_video(self,rep_number,frame):
-        print(rep_number,self.current_rep,rep_number == self.current_rep,rep_number == 0,self.counted)
-        if ((rep_number >= self.current_rep) or (rep_number == 0)) and self.counted == False:
-            self.counted = False
-        if self.counted is False:
-            print("-------new video!------------")
-            self.current_rep += 1
-            self.counted = True
-            self.video_name = "{}/rep{}.mp4".format(self.video_path, rep_number)
-            self.fourcc = cv2.VideoWriter_fourcc('F','M','P','4')
-            self.video_writer = cv2.VideoWriter(self.video_name, self.fourcc, 15.0,(640,480),True)
-            self.video_writer.release()
-            self.counted = True
-        self.video_writer.write(frame)
-    def file_helper(self,dir,fileformatending):
-        target_files = []
-        for file in os.listdir(dir,):
-            if file.endswith(fileformatending):
-                target_files.append(file)
-    def scoring_final(self):
-        to_be_scored = self.file_helper(self.video_path,".mp4")
-        for file in to_be_scored:
-            final_score,score_list = calculate_Score(file,self.action)
+    def __init__(self,execise_path,judge_threshold=0.95):
+        self.name = execise_path.split("/")[-1]
+        self.execise_path = execise_path
+        self.threshold = judge_threshold
+        self.load_stage_landmarks()
+    def score(self,stage_num,frames_to_score):
+        self.current_stage = stage_num
+        self.current_stage_landmarks = self.stage_landmarks[self.current_stage-1]
+        self.similarities = []
+        # print("current_stage_landmarks:",self.current_stage_landmarks)
+        for frame in frames_to_score:
+            for i in range(len(frame)):
+                print("frame:",frame[i])
+                if self.current_stage_landmarks[i] is None or frame[i] is None:
+                    self.similarities.append(0.0)  # 0.0 means no landmarks
+                    continue
+                if len(self.current_stage_landmarks[i]) == 0 or len(frame[i]) == 0:
+                    self.similarities.append(0.0)  # 0.0 means no landmarks
+                    continue
+                self.similarities.append(self.cosine_sim_cal(float(self.current_stage_landmarks[i][0]),float(self.current_stage_landmarks[i][1]),float(frame[i][0]),float(frame[i][1])))
+        return sum(self.similarities)/len(self.similarities)
+    def load_stage_landmarks(self):
+        with open(self.execise_path+"/stages.yaml","r") as f:
+            self.stage_landmarks = list(yaml.load(f,Loader=Loader).values())
+        print("stage_landmarks_length:",len(self.stage_landmarks))
+            
+    def cosine_sim_cal(self,x1,y1,x2,y2):
+        p1 = numpy.array([x1,y1])
+        p2 = numpy.array([x2,y2])
+        return 1-spatial.distance.cosine(p1,p2)
+
+            
+        
