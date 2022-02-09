@@ -163,8 +163,6 @@ class BodyLandMarks():
         if all(i <= 1 for i in a): return a
         else: return []
     def return_all_points(self):
-        if self.results.pose_landmarks is None:
-            return None
         return [
             self.nose(),
             self.left_eye_inner(),
