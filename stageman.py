@@ -22,6 +22,9 @@ class StageManager():
         stage_sample_array = self.stage_landmarks[int(current_stage)]
         for i in range(17):
             # print(stage_sample_array[i])
+            if stage_sample_array[i] is None or user_array[i] is None:
+                similarities.append(0.0)
+                continue
             if len(stage_sample_array[i]) == 0 or len(user_array[i]) == 0:
                 similarities.append(0.0)
                 continue
@@ -60,3 +63,5 @@ class StageManager():
     def read_config(self):
         with open(self.execise_files_dir+"/config.yaml","r") as f:
             self.config = yaml.load(f,Loader=Loader)
+    def close(self):
+        pass
