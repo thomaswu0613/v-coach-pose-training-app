@@ -2,6 +2,11 @@
 
 ### Daily Logs:
 
+###### 2022-2-9
+
+- New version of scoring manager v2.0 (in-progress)
+- Added webcam support (90% finish)
+
 ###### 2022-2-6
 
 - Working on a bunch of things (Ahhhhhhhhh!)
