@@ -23,13 +23,10 @@ def detect_pose_with_draw(frame):
 
 class BodyLandMarks():
     def __init__(self,results,mp_pose):
-        if not results:
-            return
+        # print(results)
         self.results = results
         self.lm = self.results.pose_landmarks.landmark
         self.mp_pose = mp_pose
-        if self.lm is None:
-            return None
     def nose(self):
         a = [self.lm[self.mp_pose.PoseLandmark.NOSE.value].x, self.lm[self.mp_pose.PoseLandmark.NOSE.value].y]
         if all(i <= 1 for i in a): return a
@@ -166,6 +163,8 @@ class BodyLandMarks():
         if all(i <= 1 for i in a): return a
         else: return []
     def return_all_points(self):
+        if self.results.pose_landmarks is None:
+            return None
         return [
             self.nose(),
             self.left_eye_inner(),
